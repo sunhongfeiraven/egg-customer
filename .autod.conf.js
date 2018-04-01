@@ -8,7 +8,6 @@ module.exports = {
     'test',
     'benchmark',
     'script',
-    '.roadhogrc.mock.js',
   ],
   dep: [
     'egg',
@@ -17,7 +16,6 @@ module.exports = {
   devdep: [
     'egg-ci',
     'egg-bin',
-    'egg-mock',
     'autod',
     'autod-egg',
     'eslint',

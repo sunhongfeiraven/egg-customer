@@ -2,7 +2,15 @@
 
 const { Controller } = require('egg');
 
+
 class UserController extends Controller {
+  async login() {
+    const { ctx } = this;
+    const { body } = ctx.request;
+    const result = await ctx.service.user.login(body);
+    ctx.response.body = result;
+  }
+
   async create() {
     const { ctx } = this;
     const { body } = ctx.request;
