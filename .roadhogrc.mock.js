@@ -85,11 +85,6 @@ const proxy = {
       });
       return ;
     }
-    res.send({
-      status: 'error',
-      type,
-      currentAuthority: 'guest'
-    });
   },
   'POST /api/register': (req, res) => {
     res.send({ status: 'ok', currentAuthority: 'user' });

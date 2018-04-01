@@ -34,5 +34,16 @@ module.exports = appInfo => {
     csrf: false,
   };
 
+  config.middleware = [ 'errorHandler' ];
+
+  config.errorHandler = {
+    match: '/api',
+  };
+
+  config.mongoose = {
+    url: 'mongodb://127.0.0.1/customer',
+    options: {},
+  };
+
   return config;
 };

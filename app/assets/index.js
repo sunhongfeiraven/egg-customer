@@ -2,13 +2,12 @@ import '@babel/polyfill';
 import 'url-polyfill';
 import dva from 'dva';
 
-import createHistory from 'history/createHashHistory';
+import createHistory from 'history/createBrowserHistory';
 // user BrowserHistory
 // import createHistory from 'history/createBrowserHistory';
 import createLoading from 'dva-loading';
 import 'moment/locale/zh-cn';
 import FastClick from 'fastclick';
-import './rollbar';
 
 import './index.less';
 // 1. Initialize
