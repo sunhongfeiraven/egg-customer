@@ -1,7 +1,7 @@
 'use strict';
 
 const { Controller } = require('egg');
-
+const { SUCCESS } = require('../uitl/uitl');
 
 class UserController extends Controller {
   async login() {
@@ -20,6 +20,18 @@ class UserController extends Controller {
     });
     const result = await ctx.service.user.create(body);
     ctx.response.body = result;
+  }
+
+  async fetch() {
+    const { ctx } = this;
+    ctx.response.body = Object.assign(SUCCESS, {
+      data: {
+        name: '孙晓玲',
+        avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
+        userid: '00000001',
+        notifyCount: 12,
+      },
+    });
   }
 }
 

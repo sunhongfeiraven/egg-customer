@@ -13,7 +13,6 @@ export default {
   effects: {
     *login({ payload }, { call, put }) {
       const res = yield call(fakeAccountLogin, payload);
-      console.log(res);
       // Login successfully
       if (res.code === 0) {
         yield put({
