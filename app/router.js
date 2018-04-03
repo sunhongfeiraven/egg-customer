@@ -5,9 +5,12 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  // router.all('/api/*', controller.home.proxy);
+  // user
   router.post('/api/user/create', controller.user.create);
   router.post('/api/user/login', controller.user.login);
   router.post('/api/user/fetch', controller.user.fetch);
+  // customer
+  router.post('/api/customer/add', controller.customer.create);
+
   router.get('/', controller.home.index);
 };

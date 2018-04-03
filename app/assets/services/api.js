@@ -6,3 +6,10 @@ export async function fakeAccountLogin(params) {
     body: params,
   });
 }
+
+export async function customerAdd(params) {
+  return request('/api/customer/add', {
+    method: 'POST',
+    body: params,
+  });
+}

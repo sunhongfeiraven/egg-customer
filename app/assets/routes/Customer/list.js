@@ -297,7 +297,7 @@ export default class TableList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => dispatch(routerRedux.push('/member/add'))}>
+              <Button icon="plus" type="primary" onClick={() => dispatch(routerRedux.push('/customer/add'))}>
                 新建
               </Button>
             </div>

@@ -4,7 +4,7 @@ const menuData = [
   {
     name: '客户管理',
     icon: 'solution',
-    path: '/member/list',
+    path: '/customer/list',
   },
 ];
 
