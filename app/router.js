@@ -11,6 +11,7 @@ module.exports = app => {
   router.post('/api/user/fetch', controller.user.fetch);
   // customer
   router.post('/api/customer/add', controller.customer.create);
+  router.post('/api/customer/fetch/list', controller.customer.fetchList);
 
   router.get('/', controller.home.index);
 };

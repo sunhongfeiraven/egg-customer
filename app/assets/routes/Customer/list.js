@@ -103,8 +103,13 @@ export default class TableList extends PureComponent {
   };
 
   componentDidMount() {
-    this.props.dispatch({ type: 'customer/fetch' });
+    this.handleSearch({ current: 1 });
   }
+
+  onSearch = (e) => {
+    e.preventDefault();
+    this.handleSearch();
+  };
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -150,34 +155,33 @@ export default class TableList extends PureComponent {
     });
   };
 
-  handleSearch = (e) => {
-    e.preventDefault();
-
+  // todo search
+  handleSearch=({ current }) => {
     const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
       this.setState({
-        formValues: values,
+        formValues: fieldsValue,
       });
 
       dispatch({
-        type: 'rule/fetch',
-        payload: values,
+        type: 'customer/fetchList',
+        payload: {
+          ...fieldsValue,
+          page: {
+
+          },
+        },
       });
     });
-  };
+  }
 
   renderSimpleForm() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <Form onSubmit={this.handleSearch} layout="inline">
+      <Form onSubmit={this.onSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="规则编号">
@@ -215,7 +219,7 @@ export default class TableList extends PureComponent {
   renderAdvancedForm() {
     const { getFieldDecorator } = this.props.form;
     return (
-      <Form onSubmit={this.handleSearch} layout="inline">
+      <Form onSubmit={this.onSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="规则编号">

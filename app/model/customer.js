@@ -5,6 +5,7 @@ module.exports = app => {
   const { Schema } = mongoose;
 
   const CustomerSchema = new Schema({
+    id: Schema.Types.ObjectId,
     name: { type: String, default: '' }, // 姓名
     marital: { type: String, default: '' }, // 婚姻状况
     age: { type: String, default: '' }, // 年龄

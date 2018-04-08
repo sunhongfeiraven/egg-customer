@@ -16,6 +16,24 @@ class CustomerService extends Service {
     }
     return ERROR;
   }
+  async fetchList(request) {
+    const { ctx } = this;
+    if (!request) { return; }
+    // const { page } = request;
+    // const current = page.current || 1;
+    // const pageSize = page.pageSize || 10;
+    const result = await ctx.model.Customer.find({}, '-_id -__v').limit(2).skip(1);
+    if (result) {
+      const list = result.map(item => {
+        /* eslint-disable */
+        const doc = Object.assign(item, { id: item._id });
+        return doc;
+      });
+      const page = {}
+      return Object.assign(SUCCESS, { data: { list } });
+    }
+    return ERROR;
+  }
 }
 
 module.exports = CustomerService;
