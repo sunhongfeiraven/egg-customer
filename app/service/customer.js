@@ -7,9 +7,9 @@ const { SUCCESS, ERROR } = require('../uitl/uitl');
 class CustomerService extends Service {
   async create(request) {
     const { ctx } = this;
-    if (!request) { return; }
-    const createTime = new Date();
-    request.createTime = createTime;
+    if (!request) return;
+    const createAt = new Date();
+    request.createAt = createAt;
     const result = await ctx.model.Customer.create(request);
     if (result) {
       return SUCCESS;
@@ -18,19 +18,20 @@ class CustomerService extends Service {
   }
   async fetchList(request) {
     const { ctx } = this;
-    if (!request) { return; }
-    // const { page } = request;
-    // const current = page.current || 1;
-    // const pageSize = page.pageSize || 10;
-    const result = await ctx.model.Customer.find({}, '-_id -__v').limit(2).skip(1);
+    if (!request) return;
+    const { page } = request;
+    const current = page.current || 1;
+    const pageSize = page.pageSize || 10;
+    const result = await ctx.model.Customer.find({}, '-__v').limit(pageSize).skip((current - 1) * pageSize);
+    const total = await ctx.model.Customer.find({}, '-__v').count();
     if (result) {
       const list = result.map(item => {
-        /* eslint-disable */
-        const doc = Object.assign(item, { id: item._id });
+        const doc = Object.assign(item, { customerId: item._id });
+        delete doc._id;
         return doc;
       });
-      const page = {}
-      return Object.assign(SUCCESS, { data: { list } });
+      const page = { current, total, pageSize };
+      return Object.assign(SUCCESS, { data: { list, page } });
     }
     return ERROR;
   }

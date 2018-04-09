@@ -21,6 +21,7 @@ export default {
       }
     },
     *fetchList({ payload }, { call, put }) {
+      console.log(payload);
       const res = yield call(api.customerFetchList, payload);
       if (res.code === 0) {
         yield put({
