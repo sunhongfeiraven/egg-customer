@@ -19,19 +19,18 @@ class CustomerService extends Service {
   async fetchList(request) {
     const { ctx } = this;
     if (!request) return;
-    const { page } = request;
+    const { page, name } = request;
     const current = page.current || 1;
     const pageSize = page.pageSize || 10;
-    const result = await ctx.model.Customer.find({}, '-__v').limit(pageSize).skip((current - 1) * pageSize);
-    const total = await ctx.model.Customer.find({}, '-__v').count();
+    // 查询条件
+    const filter = {
+      name: { $regex: name || '' },
+    };
+    const result = await ctx.model.Customer.find(filter, '-__v').limit(pageSize).skip((current - 1) * pageSize);
+    const total = await ctx.model.Customer.find(filter, '-__v').count();
     if (result) {
-      const list = result.map(item => {
-        const doc = Object.assign(item, { customerId: item._id });
-        delete doc._id;
-        return doc;
-      });
       const page = { current, total, pageSize };
-      return Object.assign(SUCCESS, { data: { list, page } });
+      return Object.assign(SUCCESS, { data: { list: result, page } });
     }
     return ERROR;
   }

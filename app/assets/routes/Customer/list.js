@@ -8,11 +8,7 @@ import {
   Card,
   Form,
   Input,
-  Select,
-  Icon,
   Button,
-  InputNumber,
-  DatePicker,
   Divider,
 } from 'antd';
 import { Link, routerRedux } from 'dva/router';
@@ -21,7 +17,6 @@ import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './index.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 const columns = [
   {
@@ -53,10 +48,6 @@ const columns = [
 }))
 @Form.create()
 export default class TableList extends PureComponent {
-  state = {
-    expandForm: false,
-  };
-
   componentDidMount() {
     this.handleSearch({ current: 1 });
   }
