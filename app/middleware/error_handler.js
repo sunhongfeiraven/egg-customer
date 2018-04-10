@@ -1,5 +1,7 @@
 'use strict';
 
+const { ERROR } = require('../uitl/uitl');
+
 module.exports = () => {
   return async function errorHandler(ctx, next) {
     try {
@@ -13,9 +15,9 @@ module.exports = () => {
       const error = status === 500 && ctx.app.config.env === 'prod' ? 'Internal Server Error' : err.message;
 
       // 从 error 对象上读出各个属性，设置到响应中
-      ctx.body = { error };
+      ctx.body = Object.assign(ERROR, { msg: error });
       if (status === 422) {
-        ctx.body.detail = err.errors;
+        ctx.body = Object.assign(ERROR, { msg: err.errors });
       }
       ctx.status = status;
     }

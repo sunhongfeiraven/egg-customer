@@ -5,7 +5,6 @@ const { SUCCESS, ERROR } = require('../uitl/uitl');
 
 class CustomerService extends Service {
   async create(request) {
-
     const { ctx } = this;
     if (!request) return;
     const result = await ctx.model.Customer.create(request);
@@ -14,15 +13,21 @@ class CustomerService extends Service {
     }
     return ERROR;
   }
+
   async fetchDetail(request) {
     const { ctx } = this;
     if (!request) return;
-    const result = await ctx.model.Customer.findOne({ _id: request }, '-__v');
+    const { customerId } = request;
+    const result = await ctx.model.Customer.findOne({ _id: customerId }, '-__v');
     if (result) {
-      return Object.assign(SUCCESS, { data: result });
+      // !toObject() 新世界的大门
+      const data = Object.assign(result.toObject(), { customerId });
+      delete data._id;
+      return Object.assign(SUCCESS, { data });
     }
     return ERROR;
   }
+
   async fetchList(request) {
     const { ctx } = this;
     if (!request) return;

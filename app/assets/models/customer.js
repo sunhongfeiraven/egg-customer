@@ -31,15 +31,21 @@ export default {
     },
     *fetchDetail({ payload }, { call, put }) {
       const res = yield call(api.customerFetchDetail, payload);
+      if (res.code === 0) {
+        yield put({
+          type: 'setDetail',
+          payload: res.data,
+        });
+      }
     },
   },
 
   reducers: {
     setList(state, action) {
-      return {
-        ...state,
-        data: action.payload,
-      };
+      return { ...state, data: action.payload };
+    },
+    setDetail(state, action) {
+      return { ...state, detail: action.payload };
     },
   },
 };

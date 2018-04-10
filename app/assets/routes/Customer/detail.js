@@ -18,7 +18,7 @@ export default class BasicProfile extends Component {
     const { customerId } = this.props.match.params;
     dispatch({
       type: 'customer/fetchDetail',
-      payload: customerId,
+      payload: { customerId },
     });
   }
 
