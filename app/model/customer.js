@@ -19,9 +19,8 @@ module.exports = app => {
     remark: { type: String, default: '' }, // 备注
     address: { type: String, default: '' }, // 地址
     type: { type: String, default: '' },
-    createAt: { type: Date },
-    updateAt: { type: Date },
+    createAt: { type: Date, default: new Date() },
+    updateAt: { type: Date, default: new Date() },
   });
-
   return mongoose.model('Customer', CustomerSchema);
 };

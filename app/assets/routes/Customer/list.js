@@ -34,7 +34,7 @@ const columns = [
     dataIndex: 'id',
     render: (_, record) => (
       <Fragment>
-        <Link to={`/member/detail/${record.no}`}>详情</Link>
+        <Link to={`/member/detail/${record._id}`}>详情</Link>
         <Divider type="vertical" />
         <a href="">订阅警报</a>
       </Fragment>
@@ -58,7 +58,8 @@ export default class TableList extends PureComponent {
   };
 
   handleStandardTableChange = (pagination) => {
-    console.log(pagination);
+    const { current } = pagination;
+    this.handleSearch({ current });
   };
 
   handleFormReset = () => {
@@ -120,6 +121,13 @@ export default class TableList extends PureComponent {
 
   render() {
     const { customer: { data }, loading, dispatch } = this.props;
+    const { list, page } = data;
+
+    const pagination = {
+      ...page,
+      showQuickJumper: true,
+      showTotal: total => <span>共{total}条</span>,
+    };
 
     return (
       <PageHeaderLayout title="客户列表">
@@ -132,10 +140,12 @@ export default class TableList extends PureComponent {
               </Button>
             </div>
             <Table
+              rowKey="_id"
               loading={loading}
-              dataSource={data.list}
+              dataSource={list}
               columns={columns}
               onChange={this.handleStandardTableChange}
+              pagination={pagination}
             />
           </div>
         </Card>

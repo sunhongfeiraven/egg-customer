@@ -3,13 +3,11 @@
 const { Service } = require('egg');
 const { SUCCESS, ERROR } = require('../uitl/uitl');
 
-
 class CustomerService extends Service {
   async create(request) {
+
     const { ctx } = this;
     if (!request) return;
-    const createAt = new Date();
-    request.createAt = createAt;
     const result = await ctx.model.Customer.create(request);
     if (result) {
       return SUCCESS;
@@ -26,11 +24,20 @@ class CustomerService extends Service {
     const filter = {
       name: { $regex: name || '' },
     };
-    const result = await ctx.model.Customer.find(filter, '-__v').limit(pageSize).skip((current - 1) * pageSize);
+    const result = await ctx.model.Customer.find(filter, '-__v')
+      .limit(pageSize)
+      .skip((current - 1) * pageSize);
     const total = await ctx.model.Customer.find(filter, '-__v').count();
     if (result) {
+      const list = result.map(item => {
+        return {
+          customerId: item._id,
+          name: item.name,
+          createAt: item.createAt,
+        };
+      });
       const page = { current, total, pageSize };
-      return Object.assign(SUCCESS, { data: { list: result, page } });
+      return Object.assign(SUCCESS, { data: { list, page } });
     }
     return ERROR;
   }
