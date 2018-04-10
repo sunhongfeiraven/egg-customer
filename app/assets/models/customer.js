@@ -6,10 +6,11 @@ export default {
 
   state: {
     detail: {},
-    data: {
-      filter: {},
-      list: [],
-      pagination: {},
+    list: [],
+    page: {
+      current: 1,
+      total: 0,
+      pageSize: 10,
     },
   },
 
@@ -38,11 +39,21 @@ export default {
         });
       }
     },
+    *update({ payload }, { call, put }) {
+      const res = yield call(api.customerUpdate, payload);
+      if (res.code === 0) {
+        yield put(routerRedux.push('/customer/list'));
+      }
+    },
   },
 
   reducers: {
     setList(state, action) {
-      return { ...state, data: action.payload };
+      return {
+        ...state,
+        list: action.payload.list,
+        page: action.payload.page,
+      };
     },
     setDetail(state, action) {
       return { ...state, detail: action.payload };

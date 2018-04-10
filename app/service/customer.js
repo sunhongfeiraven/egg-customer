@@ -8,9 +8,7 @@ class CustomerService extends Service {
     const { ctx } = this;
     if (!request) return;
     const result = await ctx.model.Customer.create(request);
-    if (result) {
-      return SUCCESS;
-    }
+    if (result) return SUCCESS;
     return ERROR;
   }
 
@@ -53,6 +51,18 @@ class CustomerService extends Service {
       const page = { current, total, pageSize };
       return Object.assign(SUCCESS, { data: { list, page } });
     }
+    return ERROR;
+  }
+
+  async update(request) {
+    const { ctx } = this;
+    if (!request) return;
+    const updates = request;
+    const { customerId } = updates;
+    if (!customerId) return ERROR;
+    delete updates.customerId;
+    const result = await ctx.model.Customer.findByIdAndUpdate(customerId, updates);
+    if (result) return SUCCESS;
     return ERROR;
   }
 }

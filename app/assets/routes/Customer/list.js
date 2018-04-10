@@ -32,7 +32,8 @@ const columns = [
 ];
 
 @connect(({ customer, loading }) => ({
-  customer,
+  list: customer.list,
+  page: customer.page,
   loading: loading.models.customer,
 }))
 @Form.create()
@@ -109,8 +110,7 @@ export default class TableList extends PureComponent {
   }
 
   render() {
-    const { customer: { data }, loading, dispatch } = this.props;
-    const { list, page } = data;
+    const { list, page, loading, dispatch } = this.props;
 
     const pagination = {
       ...page,
@@ -129,7 +129,7 @@ export default class TableList extends PureComponent {
               </Button>
             </div>
             <Table
-              rowKey="_id"
+              rowKey="customerId"
               loading={loading}
               dataSource={list}
               columns={columns}

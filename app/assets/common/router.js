@@ -79,6 +79,9 @@ export const getRouterData = (app) => {
     '/customer/detail/:customerId': {
       component: dynamicWrapper(app, ['customer'], () => import('../routes/Customer/detail')),
     },
+    '/customer/update/:customerId': {
+      component: dynamicWrapper(app, ['customer'], () => import('../routes/Customer/form')),
+    },
     '/customer/add': {
       component: dynamicWrapper(app, ['customer'], () => import('../routes/Customer/form')),
     },

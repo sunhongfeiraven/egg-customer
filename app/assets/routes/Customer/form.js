@@ -11,31 +11,44 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const { TextArea } = Input;
 
-@connect(({ loading }) => ({
+@connect(({ loading, customer }) => ({
+  detail: customer.detail,
   submitting: loading.models.customer,
 }))
 @Form.create()
 export default class BasicForms extends React.Component {
+  state = {
+    customerId: undefined,
+  }
+
+  componentWillMount() {
+    const { customerId } = this.props.match.params;
+    this.setState({ customerId });
+    if (customerId) {
+      this.props.dispatch({ type: 'customer/fetchDetail', payload: { customerId } });
+    }
+  }
+
   handleSubmit = (e) => {
+    const { customerId } = this.state;
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        this.props.dispatch({
-          type: 'customer/add',
-          payload: values,
-        });
+        if (customerId) {
+          this.props.dispatch({ type: 'customer/update', payload: { ...values, customerId } });
+        } else {
+          this.props.dispatch({ type: 'customer/add', payload: values });
+        }
       }
     });
   };
   render() {
-    const { submitting } = this.props;
-    const {
-      getFieldDecorator,
-      // getFieldValue,
-    } = this.props.form;
+    const { customerId } = this.state;
+    const { submitting, detail } = this.props;
+    const { getFieldDecorator } = this.props.form;
 
     return (
-      <PageHeaderLayout title="客户新增">
+      <PageHeaderLayout title={customerId ? '客户修改' : '客户新增'}>
         <Card bordered={false}>
           <Form layout="vertical" onSubmit={this.handleSubmit} style={{ marginTop: 8 }}>
             <h3 style={{ marginBottom: 24 }}>基本信息</h3>
@@ -44,6 +57,7 @@ export default class BasicForms extends React.Component {
               <Col lg={6} md={12} sm={24}>
                 <FormItem label="客户名称">
                   {getFieldDecorator('name', {
+                    initialValue: detail.name || undefined,
                     rules: [{ required: true, message: '请输客户名称' }],
                   })(<Input placeholder="给目标起个名字" />)}
                 </FormItem>
@@ -51,6 +65,7 @@ export default class BasicForms extends React.Component {
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
                 <FormItem label="婚姻状况">
                   {getFieldDecorator('marital', {
+                     initialValue: detail.marital || undefined,
                   })(
                     <Select placeholder="婚姻状况">
                       {Object.keys(dic.marital).map(item => (
@@ -65,12 +80,14 @@ export default class BasicForms extends React.Component {
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
                 <FormItem label="年龄">
                   {getFieldDecorator('age', {
+                    initialValue: detail.age || undefined,
                   })(<InputNumber style={{ width: '100%' }} placeholder="年龄" />)}
                 </FormItem>
               </Col>
               <Col lg={6} md={12} sm={24}>
                 <FormItem label="性别">
                   {getFieldDecorator('sex', {
+                     initialValue: detail.sex || undefined,
                   })(
                     <Select placeholder="性别">
                       {Object.keys(dic.sex).map(item => (
@@ -85,6 +102,7 @@ export default class BasicForms extends React.Component {
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                 <FormItem label="学历">
                   {getFieldDecorator('education', {
+                    initialValue: detail.education || undefined,
                   })(
                     <Select placeholder="学历">
                       {Object.keys(dic.education).map(item => (
@@ -99,6 +117,7 @@ export default class BasicForms extends React.Component {
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                 <FormItem label="籍贯">
                   {getFieldDecorator('placeOfOrigin', {
+                    initialValue: detail.placeOfOrigin || undefined,
                   })(
                     <Select placeholder="籍贯">
                       {Object.keys(province).map(item => (
@@ -116,32 +135,43 @@ export default class BasicForms extends React.Component {
             <Row gutter={16}>
               <Col lg={6} md={12} sm={24}>
                 <FormItem label="详细地址">
-                  {getFieldDecorator('address', {})(<Input placeholder="详细地址" />)}
+                  {getFieldDecorator('address', {
+                    initialValue: detail.address || undefined,
+                  })(<Input placeholder="详细地址" />)}
                 </FormItem>
               </Col>
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                 <FormItem label="爱好">
-                  {getFieldDecorator('hobby', {})(<Input placeholder="爱好" />)}
+                  {getFieldDecorator('hobby', {
+                     initialValue: detail.hobby || undefined,
+                  })(<Input placeholder="爱好" />)}
                 </FormItem>
               </Col>
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                 <FormItem label="性格">
-                  {getFieldDecorator('character', {})(<Input placeholder="性格" />)}
+                  {getFieldDecorator('character', {
+                    initialValue: detail.character || undefined,
+                  })(<Input placeholder="性格" />)}
                 </FormItem>
               </Col>
               <Col lg={6} md={12} sm={24}>
                 <FormItem label="社会背景">
-                  {getFieldDecorator('social', {})(<Input placeholder="社会背景" />)}
+                  {getFieldDecorator('social', {
+                     initialValue: detail.social || undefined,
+                  })(<Input placeholder="社会背景" />)}
                 </FormItem>
               </Col>
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                 <FormItem label="经历">
-                  {getFieldDecorator('experience', {})(<Input placeholder="经历" />)}
+                  {getFieldDecorator('experience', {
+                     initialValue: detail.experience || undefined,
+                  })(<Input placeholder="经历" />)}
                 </FormItem>
               </Col>
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                 <FormItem label="客户分类">
                   {getFieldDecorator('type', {
+                    initialValue: detail.type || undefined,
                     rules: [{ required: true, message: '请选择客户分类' }],
                   })(
                     <Select placeholder="客户分类">
@@ -156,7 +186,9 @@ export default class BasicForms extends React.Component {
               </Col>
               <Col lg={8} md={12} sm={24}>
                 <FormItem label="备注">
-                  {getFieldDecorator('remark', {})(
+                  {getFieldDecorator('remark', {
+                     initialValue: detail.remark || undefined,
+                  })(
                     <TextArea rows={4} />
                   )}
                 </FormItem>

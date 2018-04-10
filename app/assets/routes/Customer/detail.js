@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Divider } from 'antd';
+import { routerRedux } from 'dva/router';
+import { Card, Divider, Button } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
 import dic from '../../utils/dictionary';
@@ -22,10 +23,16 @@ export default class BasicProfile extends Component {
     });
   }
 
+  handleUpdate=(e) => {
+    e.preventDefault();
+    const { customerId } = this.props.match.params;
+    this.props.dispatch(routerRedux.push(`/customer/update/${customerId}`));
+  }
+
   render() {
     const { detail } = this.props.customer;
     return (
-      <PageHeaderLayout title="客户详情">
+      <PageHeaderLayout title="客户详情" extraContent={<Button type="primary" onClick={this.handleUpdate}>编辑</Button>}>
         <Card bordered={false}>
           <DescriptionList size="large" title="基本信息" style={{ marginBottom: 32 }}>
             <Description term="客户名称">{detail.name}</Description>

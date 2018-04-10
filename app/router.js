@@ -13,7 +13,7 @@ module.exports = app => {
   router.post('/api/customer/add', controller.customer.create);
   router.post('/api/customer/fetch/list', controller.customer.fetchList);
   router.post('/api/customer/fetch/detail', controller.customer.fetchDetail);
-  router.post('/api/customer/fetch/update', controller.customer.update);
+  router.post('/api/customer/update', controller.customer.update);
 
   router.get('/', controller.home.index);
 };

@@ -27,3 +27,10 @@ export async function customerFetchDetail(params) {
     body: params,
   });
 }
+
+export async function customerUpdate(params) {
+  return request('/api/customer/update', {
+    method: 'POST',
+    body: params,
+  });
+}
