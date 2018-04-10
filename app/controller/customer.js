@@ -15,6 +15,12 @@ class CustomerController extends Controller {
     const result = await ctx.service.customer.fetchList(body);
     ctx.response.body = result;
   }
+  async fetchDetail() {
+    const { ctx } = this;
+    const { body } = ctx.request;
+    const result = await ctx.service.customer.fetchDetail(body);
+    ctx.response.body = result;
+  }
 }
 
 module.exports = CustomerController;

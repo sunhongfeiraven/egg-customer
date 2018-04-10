@@ -5,11 +5,11 @@ export default {
   namespace: 'customer',
 
   state: {
+    detail: {},
     data: {
       filter: {},
       list: [],
       pagination: {},
-      detail: {},
     },
   },
 
@@ -21,7 +21,6 @@ export default {
       }
     },
     *fetchList({ payload }, { call, put }) {
-      console.log(payload);
       const res = yield call(api.customerFetchList, payload);
       if (res.code === 0) {
         yield put({
@@ -29,6 +28,9 @@ export default {
           payload: res.data,
         });
       }
+    },
+    *fetchDetail({ payload }, { call, put }) {
+      const res = yield call(api.customerFetchDetail, payload);
     },
   },
 

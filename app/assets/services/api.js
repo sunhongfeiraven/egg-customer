@@ -13,8 +13,16 @@ export async function customerAdd(params) {
     body: params,
   });
 }
+
 export async function customerFetchList(params) {
   return request('/api/customer/fetch/list', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function customerFetchDetail(params) {
+  return request('/api/customer/fetch/detail', {
     method: 'POST',
     body: params,
   });

@@ -1,16 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Table,
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Button,
-  Divider,
-} from 'antd';
+import { Table, Row, Col, Card, Form, Input, Button } from 'antd';
 import { Link, routerRedux } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
@@ -34,9 +25,7 @@ const columns = [
     dataIndex: 'id',
     render: (_, record) => (
       <Fragment>
-        <Link to={`/member/detail/${record._id}`}>详情</Link>
-        <Divider type="vertical" />
-        <a href="">订阅警报</a>
+        <Link to={`/customer/detail/${record.customerId}`}>详情</Link>
       </Fragment>
     ),
   },

@@ -14,6 +14,15 @@ class CustomerService extends Service {
     }
     return ERROR;
   }
+  async fetchDetail(request) {
+    const { ctx } = this;
+    if (!request) return;
+    const result = await ctx.model.Customer.findOne({ _id: request }, '-__v');
+    if (result) {
+      return Object.assign(SUCCESS, { data: result });
+    }
+    return ERROR;
+  }
   async fetchList(request) {
     const { ctx } = this;
     if (!request) return;

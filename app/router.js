@@ -12,6 +12,7 @@ module.exports = app => {
   // customer
   router.post('/api/customer/add', controller.customer.create);
   router.post('/api/customer/fetch/list', controller.customer.fetchList);
+  router.post('/api/customer/fetch/detail', controller.customer.fetchDetail);
 
   router.get('/', controller.home.index);
 };
