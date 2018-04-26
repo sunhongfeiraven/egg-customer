@@ -85,6 +85,12 @@ export const getRouterData = (app) => {
     '/customer/add': {
       component: dynamicWrapper(app, ['customer'], () => import('../routes/Customer/form')),
     },
+    '/project/list': {
+      component: dynamicWrapper(app, ['project'], () => import('../routes/Project/list')),
+    },
+    '/project/add': {
+      component: dynamicWrapper(app, ['project'], () => import('../routes/Project/form')),
+    },
     '/exception/403': {
       component: dynamicWrapper(app, [], () => import('../routes/Exception/403')),
     },

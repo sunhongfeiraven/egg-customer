@@ -11,7 +11,6 @@ module.exports = app => {
     fee: { type: String, default: '' }, // 金额
     address: { type: String, default: '' }, // 地址
     record: { type: Array, default: [] }, // 接洽记录
-    time: { type: Date }, // 时间
     createAt: { type: Date, default: new Date() },
     updateAt: { type: Date, default: new Date() },
   });

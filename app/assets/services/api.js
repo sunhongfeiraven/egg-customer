@@ -34,3 +34,32 @@ export async function customerUpdate(params) {
     body: params,
   });
 }
+
+
+export async function project(params) {
+  return request('/api/project/add', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function projectFetchList(params) {
+  return request('/api/project/fetch/list', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function projectFetchDetail(params) {
+  return request('/api/project/fetch/detail', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function projectUpdate(params) {
+  return request('/api/project/update', {
+    method: 'POST',
+    body: params,
+  });
+}

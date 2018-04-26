@@ -11,7 +11,7 @@ const FormItem = Form.Item;
 
 const columns = [
   {
-    title: '客户名称',
+    title: '项目名称',
     dataIndex: 'name',
   },
   {
@@ -25,7 +25,7 @@ const columns = [
     dataIndex: 'id',
     render: (_, record) => (
       <Fragment>
-        <Link to={`/customer/detail/${record.customerId}`}>详情</Link>
+        <Link to={`/project/detail/${record.customerId}`}>详情</Link>
       </Fragment>
     ),
   },
@@ -87,7 +87,7 @@ export default class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="项目名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入客户名称" />)}
+              {getFieldDecorator('name')(<Input placeholder="请输入项目名称" />)}
             </FormItem>
           </Col>
         </Row>
@@ -115,7 +115,7 @@ export default class TableList extends PureComponent {
     };
 
     return (
-      <PageHeaderLayout title="客户列表">
+      <PageHeaderLayout title="项目列表">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
@@ -123,13 +123,13 @@ export default class TableList extends PureComponent {
               <Button
                 icon="plus"
                 type="primary"
-                onClick={() => dispatch(routerRedux.push('/customer/add'))}
+                onClick={() => dispatch(routerRedux.push('/project/add'))}
               >
                 新建
               </Button>
             </div>
             <Table
-              rowKey="customerId"
+              rowKey="projectId"
               loading={loading}
               dataSource={list}
               columns={columns}

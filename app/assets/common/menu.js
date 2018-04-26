@@ -6,6 +6,11 @@ const menuData = [
     icon: 'solution',
     path: '/customer/list',
   },
+  {
+    name: '项目管理',
+    icon: 'environment-o',
+    path: '/project/list',
+  },
 ];
 
 function formatter(data, parentPath = '/', parentAuthority) {
