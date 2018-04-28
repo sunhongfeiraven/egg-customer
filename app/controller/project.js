@@ -25,6 +25,12 @@ class ProjectController extends Controller {
     ctx.response.body = result;
   }
 
+  async fetchAll() {
+    const { ctx } = this;
+    const result = await ctx.service.project.fetchAll();
+    ctx.response.body = result;
+  }
+
   async update() {
     const { ctx } = this;
     const { body } = ctx.request;

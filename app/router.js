@@ -20,7 +20,8 @@ module.exports = app => {
   router.post('/api/project/fetch/list', controller.project.fetchList);
   router.post('/api/project/fetch/detail', controller.project.fetchDetail);
   router.post('/api/project/update', controller.project.update);
-  // router.post('/api/project/delete', controller.project.delete);
+  router.post('/api/project/delete', controller.project.delete);
+  router.post('/api/project/fetch/all', controller.project.fetchAll);
 
   router.get('/', controller.home.index);
 };

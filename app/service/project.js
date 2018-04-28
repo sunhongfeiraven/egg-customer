@@ -58,6 +58,18 @@ class ProjectService extends Service {
     return ERROR;
   }
 
+  async fetchAll() {
+    const { ctx } = this;
+    let result = await ctx.model.Project.find({}, { _id: 1, name: 1 });
+    result = result.map(item => {
+      item = Object.assign(item.toObject(), { key: item._id });
+      delete item._id;
+      return item;
+    });
+    if (result) return Object.assign(SUCCESS, { data: result });
+    return ERROR;
+  }
+
   async update(request) {
     const { ctx } = this;
     if (!request) return;

@@ -6,6 +6,7 @@ export default {
 
   state: {
     detail: {},
+    projects: [],
     filter: {
       current: 1,
     },
@@ -56,6 +57,12 @@ export default {
         yield put({ type: 'fetchListFromStore' });
       }
     },
+    *fetchProjects({ payload }, { call, put }) {
+      const res = yield call(api.projectFetchAll, payload);
+      if (res.code === 0) {
+        yield put({ type: 'setProjects', payload: res.data });
+      }
+    },
   },
 
   reducers: {
@@ -74,6 +81,9 @@ export default {
     },
     setDetail(state, action) {
       return { ...state, detail: action.payload };
+    },
+    setProjects(state, action) {
+      return { ...state, projects: action.payload };
     },
   },
 };

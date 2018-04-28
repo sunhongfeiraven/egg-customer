@@ -7,9 +7,38 @@ class CustomerService extends Service {
   async create(request) {
     const { ctx } = this;
     if (!request) return;
+    const { targetKeys } = request;
     const result = await ctx.model.Customer.create(request);
-    if (result) return SUCCESS;
+    const customerId = result._id;
+    const linkIdList = await this.setLink({ customerId, targetKeys });
+    if (linkIdList) return SUCCESS;
     return ERROR;
+  }
+
+  async setLink({ customerId, targetKeys }) {
+    const { ctx } = this;
+    if (!targetKeys || targetKeys.length === 0) return;
+    // 全删全增
+    await ctx.model.LinkCustomerProject.remove({ customerId });
+    const linkIdList = await targetKeys.map(async projectId => {
+      const res = await ctx.model.LinkCustomerProject.create({ customerId, projectId });
+      return res._id;
+    });
+    return linkIdList;
+  }
+
+  async getLinkProjects({ customerId }) {
+    const { ctx } = this;
+    if (!customerId) return;
+    const linkResult = await ctx.model.LinkCustomerProject.find({ customerId });
+    const projects = await linkResult.map(async item => {
+      let project = await ctx.model.Project.findOne({ _id: item.projectId }, { name: 1, _id: 1 });
+      project = Object.assign(project.toObject(), { key: project._id });
+      delete project._id;
+      return project;
+    });
+
+    return projects;
   }
 
   async fetchDetail(request) {
@@ -17,9 +46,11 @@ class CustomerService extends Service {
     if (!request) return;
     const { customerId } = request;
     const result = await ctx.model.Customer.findOne({ _id: customerId }, '-__v');
-    if (result) {
+    const projects = await this.getLinkProjects({ customerId });
+    console.log(projects);
+    if (result && projects) {
       // !toObject() 新世界的大门
-      const data = Object.assign(result.toObject(), { customerId });
+      const data = Object.assign(result.toObject(), { customerId, projects });
       delete data._id;
       return Object.assign(SUCCESS, { data });
     }

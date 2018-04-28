@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Form, Input, Button, Card, Row, Col, Select, Divider, InputNumber } from 'antd';
+import { Form, Input, Button, Card, Row, Col, Select, Divider, InputNumber, Transfer } from 'antd';
 import dic from '../../utils/dictionary';
 import province from '../../utils/province.json';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
@@ -13,38 +13,45 @@ const { TextArea } = Input;
 
 @connect(({ loading, customer }) => ({
   detail: customer.detail,
+  projects: customer.projects,
   submitting: loading.models.customer,
 }))
 @Form.create()
 export default class BasicForms extends React.Component {
   state = {
     customerId: undefined,
+    targetKeys: [],
   }
 
   componentWillMount() {
     const { customerId } = this.props.match.params;
     this.setState({ customerId });
+    this.props.dispatch({ type: 'customer/fetchProjects' });
     if (customerId) {
       this.props.dispatch({ type: 'customer/fetchDetail', payload: { customerId } });
     }
   }
 
   handleSubmit = (e) => {
-    const { customerId } = this.state;
+    const { customerId, targetKeys } = this.state;
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        if (customerId) {
-          this.props.dispatch({ type: 'customer/update', payload: { ...values, customerId } });
-        } else {
-          this.props.dispatch({ type: 'customer/add', payload: values });
-        }
+      if (err) return;
+      if (customerId) {
+        this.props.dispatch({ type: 'customer/update', payload: { ...values, customerId, targetKeys } });
+      } else {
+        this.props.dispatch({ type: 'customer/add', payload: { ...values, targetKeys } });
       }
     });
   };
+
+  handleTransFerChange = (nextTargetKeys) => {
+    this.setState({ targetKeys: nextTargetKeys });
+  }
+
   render() {
-    const { customerId } = this.state;
-    const { submitting, detail } = this.props;
+    const { customerId, targetKeys } = this.state;
+    const { submitting, detail, projects } = this.props;
     const { getFieldDecorator } = this.props.form;
 
     return (
@@ -196,6 +203,17 @@ export default class BasicForms extends React.Component {
             </Row>
             <h3 style={{ marginBottom: 24 }}>分类信息</h3>
             <Divider />
+            <h3 style={{ marginBottom: 24 }}>项目关联</h3>
+            <Divider />
+            <Transfer
+              showSearch
+              dataSource={projects}
+              titles={['未关联', '已关联']}
+              onChange={this.handleTransFerChange}
+              targetKeys={targetKeys}
+              render={item => item.name}
+              listStyle={{ width: 300, height: 300 }}
+            />
             <FormItem style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>
                 提交

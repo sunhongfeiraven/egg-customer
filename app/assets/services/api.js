@@ -42,6 +42,10 @@ export async function customerDelete(params) {
   });
 }
 
+export async function projectFetchAll(params) {
+  return request('/api/project/fetch/all', { method: 'POST', body: params });
+}
+
 export async function projectAdd(params) {
   return request('/api/project/add', {
     method: 'POST',
