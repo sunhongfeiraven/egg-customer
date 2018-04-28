@@ -20,11 +20,11 @@ export default class TableForm extends PureComponent {
   getRowByKey(key, newData) {
     return (newData || this.state.data).filter(item => item.key === key)[0];
   }
-  index = 0;
+  index = this.props.value.length + 1 || 0; // 编辑时保证id不冲突
   cacheOriginData = {};
   toggleEditable = (e, key) => {
     e.preventDefault();
-    const newData = this.state.data.map(item => ({ ...item }));
+    const newData = this.state.data.map(item => ({ ...item, time: moment(item.time) }));
     const target = this.getRowByKey(key, newData);
     if (target) {
       // 进入编辑状态时保存原始数据

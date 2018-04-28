@@ -25,7 +25,7 @@ const columns = [
     dataIndex: 'id',
     render: (_, record) => (
       <Fragment>
-        <Link to={`/project/detail/${record.customerId}`}>详情</Link>
+        <Link to={`/project/detail/${record.projectId}`}>详情</Link>
       </Fragment>
     ),
   },
@@ -71,7 +71,7 @@ export default class TableList extends PureComponent {
       if (err) return;
 
       dispatch({
-        type: 'customer/fetchList',
+        type: 'project/fetchList',
         payload: {
           ...fieldsValue,
           page: { current },

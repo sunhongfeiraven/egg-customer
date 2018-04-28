@@ -7,6 +7,10 @@ class ProjectService extends Service {
   async create(request) {
     const { ctx } = this;
     if (!request) return;
+    const { record } = request;
+    request = record.map(item => {
+      return Object.assign(item, { key: item.key + '-ADD' });
+    });
     const result = await ctx.model.Project.create(request);
     if (result) return SUCCESS;
     return ERROR;
@@ -15,11 +19,11 @@ class ProjectService extends Service {
   async fetchDetail(request) {
     const { ctx } = this;
     if (!request) return;
-    const { customerId } = request;
-    const result = await ctx.model.Project.findOne({ _id: customerId }, '-__v');
+    const { projectId } = request;
+    const result = await ctx.model.Project.findOne({ _id: projectId }, '-__v');
     if (result) {
       // !toObject() 新世界的大门
-      const data = Object.assign(result.toObject(), { customerId });
+      const data = Object.assign(result.toObject(), { projectId });
       delete data._id;
       return Object.assign(SUCCESS, { data });
     }
@@ -43,7 +47,7 @@ class ProjectService extends Service {
     if (result) {
       const list = result.map(item => {
         return {
-          customerId: item._id,
+          projectId: item._id,
           name: item.name,
           createAt: item.createAt,
         };
@@ -57,11 +61,24 @@ class ProjectService extends Service {
   async update(request) {
     const { ctx } = this;
     if (!request) return;
-    const updates = request;
-    const { customerId } = updates;
-    if (!customerId) return ERROR;
-    delete updates.customerId;
-    const result = await ctx.model.Project.findByIdAndUpdate(customerId, updates);
+    let updates = request;
+    const { projectId } = updates;
+    if (!projectId) return ERROR;
+    delete updates.projectId;
+    updates = updates.record.map(item => {
+      return Object.assign(item, { key: item.key + '-ADD' });
+    });
+    const result = await ctx.model.Project.findByIdAndUpdate(projectId, updates);
+    if (result) return SUCCESS;
+    return ERROR;
+  }
+
+  async delete(request) {
+    const { ctx } = this;
+    if (!request) return;
+    const { projectId } = request;
+    if (!projectId) return ERROR;
+    const result = await ctx.model.Customer.remove({ _id: projectId });
     if (result) return SUCCESS;
     return ERROR;
   }

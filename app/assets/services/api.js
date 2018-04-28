@@ -35,8 +35,14 @@ export async function customerUpdate(params) {
   });
 }
 
+export async function customerDelete(params) {
+  return request('/api/customer/delete', {
+    method: 'POST',
+    body: params,
+  });
+}
 
-export async function project(params) {
+export async function projectAdd(params) {
   return request('/api/project/add', {
     method: 'POST',
     body: params,
@@ -59,6 +65,13 @@ export async function projectFetchDetail(params) {
 
 export async function projectUpdate(params) {
   return request('/api/project/update', {
+    method: 'POST',
+    body: params,
+  });
+}
+
+export async function projectDelete(params) {
+  return request('/api/project/delete', {
     method: 'POST',
     body: params,
   });

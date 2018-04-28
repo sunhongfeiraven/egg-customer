@@ -31,6 +31,13 @@ class ProjectController extends Controller {
     const result = await ctx.service.project.update(body);
     ctx.response.body = result;
   }
+
+  async delete() {
+    const { ctx } = this;
+    const { body } = ctx.request;
+    const result = await ctx.service.project.delete(body);
+    ctx.response.body = result;
+  }
 }
 
 module.exports = ProjectController;

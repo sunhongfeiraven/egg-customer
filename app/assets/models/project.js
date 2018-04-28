@@ -16,13 +16,13 @@ export default {
 
   effects: {
     *add({ payload }, { call, put }) {
-      const res = yield call(api.customerAdd, payload);
+      const res = yield call(api.projectAdd, payload);
       if (res.code === 0) {
-        yield put(routerRedux.push('/customer/list'));
+        yield put(routerRedux.push('/project/list'));
       }
     },
     *fetchList({ payload }, { call, put }) {
-      const res = yield call(api.customerFetchList, payload);
+      const res = yield call(api.projectFetchList, payload);
       if (res.code === 0) {
         yield put({
           type: 'setList',
@@ -31,7 +31,7 @@ export default {
       }
     },
     *fetchDetail({ payload }, { call, put }) {
-      const res = yield call(api.customerFetchDetail, payload);
+      const res = yield call(api.projectFetchDetail, payload);
       if (res.code === 0) {
         yield put({
           type: 'setDetail',
@@ -40,9 +40,18 @@ export default {
       }
     },
     *update({ payload }, { call, put }) {
-      const res = yield call(api.customerUpdate, payload);
+      const res = yield call(api.projectUpdate, payload);
       if (res.code === 0) {
-        yield put(routerRedux.push('/customer/list'));
+        yield put(routerRedux.push('/project/list'));
+      }
+    },
+    *delete({ payload }, { call, put }) {
+      const res = yield call(api.projectDelete, payload);
+      if (res.code === 0) {
+        yield put({
+          type: 'fetchList',
+          payload: {},
+        });
       }
     },
   },

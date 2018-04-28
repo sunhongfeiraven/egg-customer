@@ -45,6 +45,15 @@ export default {
         yield put(routerRedux.push('/customer/list'));
       }
     },
+    *delete({ payload }, { call, put }) {
+      const res = yield call(api.customerDelete, payload);
+      if (res.code === 0) {
+        yield put({
+          type: 'fetchList',
+          payload: {},
+        });
+      }
+    },
   },
 
   reducers: {

@@ -31,6 +31,13 @@ class CustomerController extends Controller {
     const result = await ctx.service.customer.update(body);
     ctx.response.body = result;
   }
+
+  async delete() {
+    const { ctx } = this;
+    const { body } = ctx.request;
+    const result = await ctx.service.customer.delete(body);
+    ctx.response.body = result;
+  }
 }
 
 module.exports = CustomerController;

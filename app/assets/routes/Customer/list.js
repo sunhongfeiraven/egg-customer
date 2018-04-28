@@ -1,35 +1,13 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Row, Col, Card, Form, Input, Button } from 'antd';
+import { Table, Row, Col, Card, Form, Input, Button, Divider } from 'antd';
 import { Link, routerRedux } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './index.less';
 
 const FormItem = Form.Item;
-
-const columns = [
-  {
-    title: '客户名称',
-    dataIndex: 'name',
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createAt',
-    sorter: true,
-    render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
-  },
-  {
-    title: '操作',
-    dataIndex: 'id',
-    render: (_, record) => (
-      <Fragment>
-        <Link to={`/customer/detail/${record.customerId}`}>详情</Link>
-      </Fragment>
-    ),
-  },
-];
 
 @connect(({ customer, loading }) => ({
   list: customer.list,
@@ -84,6 +62,13 @@ export default class TableList extends PureComponent {
     });
   }
 
+  handleDelete = (customerId) => {
+    this.props.dispatch({
+      type: 'customer/delete',
+      payload: { customerId },
+    });
+  }
+
   renderForm() {
     const { getFieldDecorator } = this.props.form;
     return (
@@ -117,6 +102,30 @@ export default class TableList extends PureComponent {
       showQuickJumper: true,
       showTotal: total => <span>共{total}条</span>,
     };
+
+    const columns = [
+      {
+        title: '客户名称',
+        dataIndex: 'name',
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createAt',
+        sorter: true,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
+      },
+      {
+        title: '操作',
+        dataIndex: 'id',
+        render: (_, record) => (
+          <Fragment>
+            <Link to={`/customer/detail/${record.customerId}`}>详情</Link>
+            <Divider type="vertical" />
+            <a onClick={() => this.handleDelete(record.customerId)}>删除</a>
+          </Fragment>
+        ),
+      },
+    ];
 
     return (
       <PageHeaderLayout title="客户列表">

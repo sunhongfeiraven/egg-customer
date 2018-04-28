@@ -65,6 +65,16 @@ class CustomerService extends Service {
     if (result) return SUCCESS;
     return ERROR;
   }
+
+  async delete(request) {
+    const { ctx } = this;
+    if (!request) return;
+    const { customerId } = request;
+    if (!customerId) return ERROR;
+    const result = await ctx.model.Customer.remove({ _id: customerId });
+    if (result) return SUCCESS;
+    return ERROR;
+  }
 }
 
 module.exports = CustomerService;
