@@ -6,6 +6,9 @@ export default {
 
   state: {
     detail: {},
+    filter: {
+      current: 1,
+    },
     list: [],
     page: {
       current: 1,
@@ -24,11 +27,13 @@ export default {
     *fetchList({ payload }, { call, put }) {
       const res = yield call(api.customerFetchList, payload);
       if (res.code === 0) {
-        yield put({
-          type: 'setList',
-          payload: res.data,
-        });
+        yield put({ type: 'setList', payload: res.data });
+        yield put({ type: 'setFilter', payload });
       }
+    },
+    *fetchListFromStore(_, { call, select }) {
+      const filter = yield select(({ customer }) => customer.filter);
+      yield call({ type: 'fetchList', payload: filter });
     },
     *fetchDetail({ payload }, { call, put }) {
       const res = yield call(api.customerFetchDetail, payload);
@@ -48,10 +53,7 @@ export default {
     *delete({ payload }, { call, put }) {
       const res = yield call(api.customerDelete, payload);
       if (res.code === 0) {
-        yield put({
-          type: 'fetchList',
-          payload: {},
-        });
+        yield put({ type: 'fetchListFromStore' });
       }
     },
   },
@@ -62,6 +64,12 @@ export default {
         ...state,
         list: action.payload.list,
         page: action.payload.page,
+      };
+    },
+    setFilter(state, action) {
+      return {
+        ...state,
+        filter: action.payload,
       };
     },
     setDetail(state, action) {

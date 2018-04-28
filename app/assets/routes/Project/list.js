@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Table, Row, Col, Card, Form, Input, Button } from 'antd';
+import { Table, Row, Col, Card, Form, Input, Button, Divider } from 'antd';
 import { Link, routerRedux } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
@@ -9,31 +9,11 @@ import styles from './index.less';
 
 const FormItem = Form.Item;
 
-const columns = [
-  {
-    title: '项目名称',
-    dataIndex: 'name',
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createAt',
-    sorter: true,
-    render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
-  },
-  {
-    title: '操作',
-    dataIndex: 'id',
-    render: (_, record) => (
-      <Fragment>
-        <Link to={`/project/detail/${record.projectId}`}>详情</Link>
-      </Fragment>
-    ),
-  },
-];
 
 @connect(({ project, loading }) => ({
   list: project.list,
   page: project.page,
+  filter: project.filter,
   loading: loading.models.project,
 }))
 @Form.create()
@@ -54,17 +34,22 @@ export default class TableList extends PureComponent {
 
   handleFormReset = () => {
     const { form } = this.props;
-    form.resetFields();
+    form.setFieldsValue({ name: '' });
+    this.handleSearch({ current: 1 });
   };
+
+  handleDelete = (projectId) => {
+    this.props.dispatch({
+      type: 'project/delete',
+      payload: { projectId },
+    });
+  }
 
   toggleForm = () => {
-    this.setState({
-      expandForm: !this.state.expandForm,
-    });
+    this.setState({ expandForm: !this.state.expandForm });
   };
 
-  // todo search
-  handleSearch = ({ current }) => {
+  handleSearch = ({ current = 1 }) => {
     const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
@@ -81,13 +66,16 @@ export default class TableList extends PureComponent {
   };
 
   renderForm() {
+    const { filter } = this.props;
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.onSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="项目名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入项目名称" />)}
+              {getFieldDecorator('name', {
+                initialValue: filter.name || undefined,
+              })(<Input placeholder="请输入项目名称" />)}
             </FormItem>
           </Col>
         </Row>
@@ -107,6 +95,30 @@ export default class TableList extends PureComponent {
 
   render() {
     const { list, page, loading, dispatch } = this.props;
+
+    const columns = [
+      {
+        title: '项目名称',
+        dataIndex: 'name',
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createAt',
+        sorter: true,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
+      },
+      {
+        title: '操作',
+        dataIndex: 'id',
+        render: (_, record) => (
+          <Fragment>
+            <Link to={`/project/detail/${record.projectId}`}>详情</Link>
+            <Divider type="vertical" />
+            <a onClick={() => this.handleDelete(record.projectId)}>删除</a>
+          </Fragment>
+        ),
+      },
+    ];
 
     const pagination = {
       ...page,

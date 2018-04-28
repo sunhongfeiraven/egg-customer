@@ -4,12 +4,12 @@ const menuData = [
   {
     name: '客户管理',
     icon: 'solution',
-    path: '/customer/list',
+    path: 'customer/list',
   },
   {
     name: '项目管理',
     icon: 'environment-o',
-    path: '/project/list',
+    path: 'project/list',
   },
 ];
 

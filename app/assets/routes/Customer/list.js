@@ -12,6 +12,7 @@ const FormItem = Form.Item;
 @connect(({ customer, loading }) => ({
   list: customer.list,
   page: customer.page,
+  filter: customer.filter,
   loading: loading.models.customer,
 }))
 @Form.create()
@@ -31,12 +32,9 @@ export default class TableList extends PureComponent {
   };
 
   handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    dispatch({
-      type: 'rule/fetch',
-      payload: {},
-    });
+    const { form } = this.props;
+    form.setFieldsValue({ name: '' });
+    this.handleSearch({ current: 1 });
   };
 
   toggleForm = () => {
@@ -46,7 +44,7 @@ export default class TableList extends PureComponent {
   };
 
   // todo search
-  handleSearch=({ current }) => {
+  handleSearch = ({ current }) => {
     const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
@@ -60,23 +58,26 @@ export default class TableList extends PureComponent {
         },
       });
     });
-  }
+  };
 
   handleDelete = (customerId) => {
     this.props.dispatch({
       type: 'customer/delete',
       payload: { customerId },
     });
-  }
+  };
 
   renderForm() {
+    const { filter } = this.props;
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.onSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="客户名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入客户名称" />)}
+              {getFieldDecorator('name', {
+                initialValue: filter.name || undefined,
+              })(<Input placeholder="请输入客户名称" />)}
             </FormItem>
           </Col>
         </Row>
@@ -133,7 +134,11 @@ export default class TableList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => dispatch(routerRedux.push('/customer/add'))}>
+              <Button
+                icon="plus"
+                type="primary"
+                onClick={() => dispatch(routerRedux.push('/customer/add'))}
+              >
                 新建
               </Button>
             </div>
