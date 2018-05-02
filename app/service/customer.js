@@ -10,8 +10,8 @@ class CustomerService extends Service {
     const { targetKeys } = request;
     const result = await ctx.model.Customer.create(request);
     const customerId = result._id;
-    const linkIdList = await this.setLink({ customerId, targetKeys });
-    if (linkIdList) return SUCCESS;
+    await this.setLink({ customerId, targetKeys });
+    if (result) return SUCCESS;
     return ERROR;
   }
 
@@ -31,14 +31,9 @@ class CustomerService extends Service {
     const { ctx } = this;
     if (!customerId) return;
     const linkResult = await ctx.model.LinkCustomerProject.find({ customerId });
-    const projects = await linkResult.map(async item => {
-      let project = await ctx.model.Project.findOne({ _id: item.projectId }, { name: 1, _id: 1 });
-      project = Object.assign(project.toObject(), { key: project._id });
-      delete project._id;
-      return project;
-    });
-
-    return projects;
+    const linkProjectIds = linkResult.map(link => link.projectId);
+    const projects = await ctx.model.Project.find({ _id: { $in: linkProjectIds } }, { _id: 1, name: 1, createAt: 1 });
+    return projects.map(item => ({ projectId: item._id, name: item.name, createAt: item.createAt }));
   }
 
   async fetchDetail(request) {
@@ -47,7 +42,6 @@ class CustomerService extends Service {
     const { customerId } = request;
     const result = await ctx.model.Customer.findOne({ _id: customerId }, '-__v');
     const projects = await this.getLinkProjects({ customerId });
-    console.log(projects);
     if (result && projects) {
       // !toObject() 新世界的大门
       const data = Object.assign(result.toObject(), { customerId, projects });
@@ -89,10 +83,11 @@ class CustomerService extends Service {
     const { ctx } = this;
     if (!request) return;
     const updates = request;
-    const { customerId } = updates;
+    const { customerId, targetKeys } = updates;
     if (!customerId) return ERROR;
     delete updates.customerId;
     const result = await ctx.model.Customer.findByIdAndUpdate(customerId, updates);
+    await this.setLink({ customerId, targetKeys });
     if (result) return SUCCESS;
     return ERROR;
   }

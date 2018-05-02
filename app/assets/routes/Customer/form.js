@@ -14,14 +14,14 @@ const { TextArea } = Input;
 @connect(({ loading, customer }) => ({
   detail: customer.detail,
   projects: customer.projects,
+  targetKeys: customer.targetKeys,
   submitting: loading.models.customer,
 }))
 @Form.create()
 export default class BasicForms extends React.Component {
   state = {
     customerId: undefined,
-    targetKeys: [],
-  }
+  };
 
   componentWillMount() {
     const { customerId } = this.props.match.params;
@@ -33,25 +33,29 @@ export default class BasicForms extends React.Component {
   }
 
   handleSubmit = (e) => {
-    const { customerId, targetKeys } = this.state;
+    const { customerId } = this.state;
+    const { targetKeys } = this.props;
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (err) return;
       if (customerId) {
-        this.props.dispatch({ type: 'customer/update', payload: { ...values, customerId, targetKeys } });
+        this.props.dispatch({
+          type: 'customer/update',
+          payload: { ...values, customerId, targetKeys },
+        });
       } else {
         this.props.dispatch({ type: 'customer/add', payload: { ...values, targetKeys } });
       }
     });
   };
 
-  handleTransFerChange = (nextTargetKeys) => {
-    this.setState({ targetKeys: nextTargetKeys });
-  }
+  handleTransFerChange = (payload) => {
+    this.props.dispatch({ type: 'customer/transferChange', payload });
+  };
 
   render() {
-    const { customerId, targetKeys } = this.state;
-    const { submitting, detail, projects } = this.props;
+    const { customerId } = this.state;
+    const { submitting, detail, projects, targetKeys } = this.props;
     const { getFieldDecorator } = this.props.form;
 
     return (
@@ -72,7 +76,7 @@ export default class BasicForms extends React.Component {
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 8 }} md={{ span: 12 }} sm={24}>
                 <FormItem label="婚姻状况">
                   {getFieldDecorator('marital', {
-                     initialValue: detail.marital || undefined,
+                    initialValue: detail.marital || undefined,
                   })(
                     <Select placeholder="婚姻状况">
                       {Object.keys(dic.marital).map(item => (
@@ -94,7 +98,7 @@ export default class BasicForms extends React.Component {
               <Col lg={6} md={12} sm={24}>
                 <FormItem label="性别">
                   {getFieldDecorator('sex', {
-                     initialValue: detail.sex || undefined,
+                    initialValue: detail.sex || undefined,
                   })(
                     <Select placeholder="性别">
                       {Object.keys(dic.sex).map(item => (
@@ -150,7 +154,7 @@ export default class BasicForms extends React.Component {
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                 <FormItem label="爱好">
                   {getFieldDecorator('hobby', {
-                     initialValue: detail.hobby || undefined,
+                    initialValue: detail.hobby || undefined,
                   })(<Input placeholder="爱好" />)}
                 </FormItem>
               </Col>
@@ -164,14 +168,14 @@ export default class BasicForms extends React.Component {
               <Col lg={6} md={12} sm={24}>
                 <FormItem label="社会背景">
                   {getFieldDecorator('social', {
-                     initialValue: detail.social || undefined,
+                    initialValue: detail.social || undefined,
                   })(<Input placeholder="社会背景" />)}
                 </FormItem>
               </Col>
               <Col xl={{ span: 6, offset: 2 }} lg={{ span: 10 }} md={{ span: 24 }} sm={24}>
                 <FormItem label="经历">
                   {getFieldDecorator('experience', {
-                     initialValue: detail.experience || undefined,
+                    initialValue: detail.experience || undefined,
                   })(<Input placeholder="经历" />)}
                 </FormItem>
               </Col>
@@ -194,10 +198,8 @@ export default class BasicForms extends React.Component {
               <Col lg={8} md={12} sm={24}>
                 <FormItem label="备注">
                   {getFieldDecorator('remark', {
-                     initialValue: detail.remark || undefined,
-                  })(
-                    <TextArea rows={4} />
-                  )}
+                    initialValue: detail.remark || undefined,
+                  })(<TextArea rows={4} />)}
                 </FormItem>
               </Col>
             </Row>

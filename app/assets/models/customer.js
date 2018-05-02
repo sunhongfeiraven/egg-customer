@@ -10,6 +10,7 @@ export default {
     filter: {
       current: 1,
     },
+    targetKeys: [],
     list: [],
     page: {
       current: 1,
@@ -44,6 +45,7 @@ export default {
           payload: res.data,
         });
       }
+      return yield res;
     },
     *update({ payload }, { call, put }) {
       const res = yield call(api.customerUpdate, payload);
@@ -84,6 +86,9 @@ export default {
     },
     setProjects(state, action) {
       return { ...state, projects: action.payload };
+    },
+    transferChange(state, action) {
+      return { ...state, targetKeys: action.payload };
     },
   },
 };

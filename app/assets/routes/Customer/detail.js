@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
-import { Card, Divider, Button } from 'antd';
+import { routerRedux, Link } from 'dva/router';
+import moment from 'moment';
+import { Card, Divider, Button, Table } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
 import dic from '../../utils/dictionary';
 
 const { Description } = DescriptionList;
-
 
 @connect(({ customer, loading }) => ({
   customer,
@@ -30,7 +30,31 @@ export default class BasicProfile extends Component {
   }
 
   render() {
+    const { loading } = this.props;
     const { detail } = this.props.customer;
+    const columns = [
+      {
+        title: '项目名称',
+        dataIndex: 'name',
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createAt',
+        sorter: true,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm')}</span>,
+      },
+      {
+        title: '操作',
+        dataIndex: 'id',
+        render: (_, record) => (
+          <Fragment>
+            <Link to={`/project/detail/${record.projectId}`}>详情</Link>
+            <Divider type="vertical" />
+            <a onClick={() => this.handleDelete(record.projectId)}>删除</a>
+          </Fragment>
+        ),
+      },
+    ];
     return (
       <PageHeaderLayout title="客户详情" extraContent={<Button type="primary" onClick={this.handleUpdate}>编辑</Button>}>
         <Card bordered={false}>
@@ -49,6 +73,14 @@ export default class BasicProfile extends Component {
             <Description term="性格">{detail.character}</Description>
             <Description term="社会背景">{detail.social}</Description>
             <Description term="经历">{detail.experience}</Description>
+          </DescriptionList>
+          <DescriptionList size="large" title="相关项目" style={{ marginBottom: 32 }} >
+            <Table
+              rowKey="projectId"
+              loading={loading}
+              dataSource={detail.projects}
+              columns={columns}
+            />
           </DescriptionList>
         </Card>
       </PageHeaderLayout>
